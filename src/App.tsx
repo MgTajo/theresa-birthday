@@ -1,62 +1,24 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Aurora from '@/components/Aurora'
 import ClickSpark from '@/components/ClickSpark'
 import Choice from '@/sections/Choice'
 import Hero from '@/sections/Hero'
 import Result from '@/sections/Result'
 import Spin from '@/sections/Spin'
-import { BONUS_GIFTS, MAIN_GIFTS, type BonusGift, type MainGift } from '@/config/gifts'
+import type { BonusGift, MainGift } from '@/config/gifts'
 import type { Outcome } from '@/lib/notify'
 
 type Stage = 'hero' | 'choice' | 'spin' | 'result'
 
-const STORAGE_KEY = 'theresa-birthday/outcome'
-
-interface StoredOutcome {
-  giftId: string
-  bonusId: string
-  decidedAt: string
-  /** True once Formspree has accepted the submission. */
-  notified: boolean
-}
-
-const readStored = (): StoredOutcome | null => {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return null
-    const parsed = JSON.parse(raw) as StoredOutcome
-    // Ignore anything referencing gifts that have since been edited away.
-    if (!MAIN_GIFTS.some(g => g.id === parsed.giftId)) return null
-    if (!BONUS_GIFTS.some(b => b.id === parsed.bonusId)) return null
-    return parsed
-  } catch {
-    return null
-  }
-}
-
-const writeStored = (value: StoredOutcome) => {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(value))
-  } catch {
-    /* Private-mode Safari refuses writes — the flow still works in-session. */
-  }
-}
-
 export default function App() {
-  const restored = useMemo(readStored, [])
-
-  const [stage, setStage] = useState<Stage>(restored ? 'result' : 'hero')
-  const [gift, setGift] = useState<MainGift | null>(
-    restored ? (MAIN_GIFTS.find(g => g.id === restored.giftId) ?? null) : null,
-  )
-  const [bonus, setBonus] = useState<BonusGift | null>(
-    restored ? (BONUS_GIFTS.find(b => b.id === restored.bonusId) ?? null) : null,
-  )
-  const [decidedAt, setDecidedAt] = useState(restored?.decidedAt ?? '')
-
-  // Only send the email for a decision that hasn't been delivered yet, so a
-  // reload of the result screen doesn't fire a second one.
-  const [shouldNotify, setShouldNotify] = useState(restored ? !restored.notified : false)
+  // Deliberately no persistence: every reload starts over at the hero. This
+  // is the intended behaviour, not just a test-mode leftover — nothing is
+  // saved across reloads, so a fresh visit is always a fresh run.
+  const [stage, setStage] = useState<Stage>('hero')
+  const [gift, setGift] = useState<MainGift | null>(null)
+  const [bonus, setBonus] = useState<BonusGift | null>(null)
+  const [decidedAt, setDecidedAt] = useState('')
+  const [shouldNotify, setShouldNotify] = useState(false)
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' })
@@ -69,19 +31,15 @@ export default function App() {
 
   const handleWin = (won: BonusGift) => {
     if (!gift) return
-    const now = new Date().toISOString()
     setBonus(won)
-    setDecidedAt(now)
+    setDecidedAt(new Date().toISOString())
     setShouldNotify(true)
-    writeStored({ giftId: gift.id, bonusId: won.id, decidedAt: now, notified: false })
     setStage('result')
   }
 
   const handleNotified = useCallback(() => {
     setShouldNotify(false)
-    if (!gift || !bonus) return
-    writeStored({ giftId: gift.id, bonusId: bonus.id, decidedAt, notified: true })
-  }, [gift, bonus, decidedAt])
+  }, [])
 
   const outcome: Outcome | null = gift && bonus ? { gift, bonus, decidedAt } : null
 
