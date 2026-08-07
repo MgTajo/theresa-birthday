@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import AnimatedContent from '@/components/AnimatedContent'
 import CircularText from '@/components/CircularText'
 import StageHeader from '@/components/StageHeader'
@@ -21,25 +21,42 @@ export default function Spin({
   const [spinning, setSpinning] = useState(false)
   const [done, setDone] = useState(false)
   const winnerRef = useRef<BonusGift | null>(null)
+  const settledRef = useRef(false)
+  const timersRef = useRef<number[]>([])
+
+  useEffect(
+    () => () => {
+      timersRef.current.forEach(window.clearTimeout)
+    },
+    [],
+  )
+
+  // Called by the disc's transitionend, and by a timeout in case that event
+  // never arrives — Safari drops it if the tab is backgrounded mid-spin, which
+  // would otherwise strand the page on "Dreht…" with no way forward.
+  const handleSettle = useCallback(() => {
+    if (settledRef.current) return
+    settledRef.current = true
+
+    setSpinning(false)
+    setDone(true)
+    tick([20, 60, 20, 60, 40])
+    shower(2400)
+
+    const winner = winnerRef.current
+    // Let the confetti land before swapping screens.
+    timersRef.current.push(window.setTimeout(() => winner && onWin(winner), 1500))
+  }, [onWin])
 
   const spin = () => {
     if (spinning || done) return
     const index = pickWeightedIndex(BONUS_GIFTS)
     winnerRef.current = BONUS_GIFTS[index]
+    settledRef.current = false
     setSpinning(true)
     tick([10, 40, 10])
     setRotation(current => rotationForIndex(current, index, BONUS_GIFTS.length))
-  }
-
-  const handleSettle = () => {
-    if (!spinning) return
-    setSpinning(false)
-    setDone(true)
-    tick([20, 60, 20, 60, 40])
-    shower(2400)
-    const winner = winnerRef.current
-    // Let the confetti land before swapping screens.
-    window.setTimeout(() => winner && onWin(winner), 1500)
+    timersRef.current.push(window.setTimeout(handleSettle, SPIN_MS + 600))
   }
 
   return (
