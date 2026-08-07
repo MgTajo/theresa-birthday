@@ -18,11 +18,7 @@ export default function Choice({ onConfirm }: { onConfirm: (gift: MainGift) => v
 
   return (
     <section className="screen-h mx-auto flex w-full max-w-lg flex-col justify-center px-5 pb-36 pt-20">
-      <StageHeader
-        step="Schritt 1 von 2"
-        title="Such dir eins aus"
-        subtitle="Drei Möglichkeiten, eine Entscheidung. Tippe an, was dich am meisten reizt."
-      />
+      <StageHeader title="Wähle ein Geschenk" />
 
       <div className="mt-8 flex flex-col gap-4">
         {MAIN_GIFTS.map((gift, i) => {

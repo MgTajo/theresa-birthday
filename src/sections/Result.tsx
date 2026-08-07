@@ -10,7 +10,8 @@ import { mailtoFallback, sendOutcome, type NotifyState, type Outcome } from '@/l
 
 interface ResultProps {
   outcome: Outcome
-  /** False when the screen is restored from a previous visit — no re-send. */
+  /** Always true on arrival here: every completed spin sends exactly one
+   * notification, since nothing about the run persists across a reload. */
   shouldNotify: boolean
   onNotified: () => void
 }

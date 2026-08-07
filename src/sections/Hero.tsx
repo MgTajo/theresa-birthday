@@ -16,10 +16,6 @@ export default function Hero({ onStart }: { onStart: () => void }) {
 
   return (
     <section className="screen-h safe-bottom flex flex-col items-center justify-center px-6 pt-16 text-center">
-      <p className="mb-6 text-[0.7rem] font-light uppercase tracking-[0.42em] text-white/45">
-        Heute · nur für dich
-      </p>
-
       <SplitText
         text="Alles Gute"
         tag="h1"
@@ -34,6 +30,12 @@ export default function Hero({ onStart }: { onStart: () => void }) {
         to={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
       />
 
+      <ShinyText
+        text="zum Geburtstag"
+        speed={4}
+        className="font-display text-2xl font-light tracking-wide sm:text-4xl"
+      />
+
       <div className="my-1">
         <GradientText
           colors={['#22d3ee', '#a78bfa', '#f43f5e', '#f59e0b', '#22d3ee']}
@@ -43,12 +45,6 @@ export default function Hero({ onStart }: { onStart: () => void }) {
           {RECIPIENT}
         </GradientText>
       </div>
-
-      <ShinyText
-        text="zum Geburtstag"
-        speed={4}
-        className="font-display text-2xl font-light tracking-wide sm:text-4xl"
-      />
 
       {AGE !== null && (
         <div className="mt-7 flex items-baseline gap-2 text-white/70">
@@ -63,8 +59,8 @@ export default function Hero({ onStart }: { onStart: () => void }) {
       )}
 
       <BlurText
-        text="Ein Geschenk suchst du dir selbst aus. Das zweite sucht sich das Glück."
-        delay={70}
+        text="Liebe Theresa, ich wünsche dir ganz ganz viel Freude im neuen Lebensjahr! Hoffe du wirst noch mehr Spaß beim Radfahren haben wie bisher und mindestens genau so glücklich bleiben!"
+        delay={20}
         animateBy="words"
         direction="bottom"
         className="mt-9 max-w-sm justify-center text-balance text-base font-light leading-relaxed text-white/65"

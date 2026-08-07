@@ -61,11 +61,7 @@ export default function Spin({
 
   return (
     <section className="screen-h safe-bottom mx-auto flex w-full max-w-lg flex-col justify-center px-5 pt-14">
-      <StageHeader
-        step="Schritt 2 von 2"
-        title="Und jetzt das Glück"
-        subtitle="Auf dein Geschenk kommt noch eine Kleinigkeit obendrauf. Welche, entscheidet das Rad."
-      />
+      <StageHeader title="Es gibt auch noch eine Überraschung" />
 
       <AnimatedContent distance={30} duration={0.7} delay={0.15} threshold={0.05}>
         {/* Two lines: a long gift title would otherwise blow past the screen
