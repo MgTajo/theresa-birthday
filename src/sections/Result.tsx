@@ -60,15 +60,12 @@ export default function Result({ outcome, shouldNotify, onNotified }: ResultProp
   return (
     <section className="screen-h safe-bottom mx-auto flex w-full max-w-lg flex-col justify-center px-5 py-20">
       <header className="text-center">
-        <p className="text-[0.65rem] font-light uppercase tracking-[0.4em] text-white/40">
-          Fertig
-        </p>
         <GradientText
           colors={['#22d3ee', '#a78bfa', '#f43f5e', '#f59e0b', '#22d3ee']}
           animationSpeed={8}
-          className="mt-3 font-serif text-4xl italic sm:text-5xl"
+          className="font-serif text-4xl italic sm:text-5xl"
         >
-          Deine Bescherung
+          Deine Geschenke
         </GradientText>
 
         <div className="mx-auto mt-4 max-w-xs">
