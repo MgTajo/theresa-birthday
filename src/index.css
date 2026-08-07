@@ -1,0 +1,95 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', ui-serif, Georgia, serif;
+
+  --color-swim: #22d3ee;
+  --color-bike: #f59e0b;
+  --color-run: #f43f5e;
+  --color-ink: #05070f;
+
+  /* Required by StarBorder — it ships a Tailwind v3 config snippet, so the
+     keyframes have to be declared here instead. */
+  --animate-star-movement-bottom: star-movement-bottom linear infinite alternate;
+  --animate-star-movement-top: star-movement-top linear infinite alternate;
+
+  @keyframes star-movement-bottom {
+    0% {
+      transform: translate(0%, 0%);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(-100%, 0%);
+      opacity: 0;
+    }
+  }
+
+  @keyframes star-movement-top {
+    0% {
+      transform: translate(0%, 0%);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(100%, 0%);
+      opacity: 0;
+    }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-ink);
+    color: #f8fafc;
+    font-family: var(--font-display);
+    /* Stops the rubber-band scroll from revealing a white strip on iOS. */
+    overscroll-behavior-y: none;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* iOS Safari double-tap zoom makes tapping gift cards feel broken. */
+  button {
+    touch-action: manipulation;
+  }
+
+  ::selection {
+    background: rgb(34 211 238 / 0.35);
+  }
+}
+
+@utility safe-bottom {
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+}
+
+/* Full height that survives the iOS URL bar collapsing. */
+@utility screen-h {
+  min-height: 100svh;
+}
+
+/* Opacity only — deliberately no transform. Animating transform on <main>
+   leaves it with an identity matrix, which makes it the containing block for
+   the choice stage's `fixed` CTA bar and stops it pinning to the viewport. */
+@keyframes stage-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
